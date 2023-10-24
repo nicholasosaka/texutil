@@ -1,0 +1,4 @@
+prompt-toolkit==1.0.14
+PyInquirer==1.0.3
+pytest==7.4.2
+rich==13.6.0
