@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import rich_click as click
 import os, re
 
