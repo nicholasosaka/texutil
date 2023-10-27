@@ -22,7 +22,7 @@ def clean(directory, ignore):
     for extension in ignore:
         tex_detritus_extensions.remove(extension)
     
-    extension_search_pattern =  f".*\.({'|'.join(tex_detritus_extensions)})"
+    extension_search_pattern =  ".*\\." + f"({'|'.join(tex_detritus_extensions)})"
     regex = re.compile(extension_search_pattern)
     
     file_deletion_count = 0
