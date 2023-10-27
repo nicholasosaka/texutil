@@ -12,5 +12,7 @@ setup(
         'console_scripts': [
             'txu = texutil.scripts.txu:cli'
         ]
-    }
+    },
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
 )
