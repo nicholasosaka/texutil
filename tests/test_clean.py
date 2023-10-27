@@ -58,3 +58,11 @@ class TestClean:
         assert result.exit_code == 0
         assert os.path.exists('tmp/sample_file.txt') == True
         assert os.path.exists('tmp/sample_file.py') == True
+    
+    def test_clean_removes_files(self):
+        runner = CliRunner()
+        result = runner.invoke(clean, ['tmp/'])
+        assert result.exit_code == 0
+        assert os.path.exists('tmp/sample_file.log') == False
+        assert os.path.exists('tmp/sample_file.pdf') == False
+        assert os.path.exists('tmp/sample_file.aux') == False
