@@ -45,6 +45,49 @@ def clean(directory, ignore):
     end = time.time()
     click.secho(f"Removed {file_deletion_count} files in {format_timespan(end-start, detailed=True)}", fg='green', bold=True)
 
+@click.command()
+@click.argument('input', type=click.Path(exists=True))
+@click.option('-c', '--compiler',
+              type=click.Choice(['pdflatex'], case_sensitive=False),
+              help="Specify TeX compiler. Defaults to pdflatex.")
+@click.option('-t', '--timestamp', is_flag=True,
+              help="Specify TeX compiler. Defaults to pdflatex.")
+def compile(input, compiler, timestamp):
+    """
+    Compile INPUT
+    """
+
+    if compiler is None:
+        compiler = 'pdflatex'
+
+    start = time.time()
+    click.secho(f'Compiling {input} using {compiler}', fg='blue')
+
+    proc = subprocess.Popen(
+        [compiler, '--interaction=batchmode', input],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    o, e = proc.communicate()
+
+    end = time.time()
+
+    if timestamp:
+        dt = datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')
+        pdf_name_src = input.replace("tex", "pdf")
+        if not os.path.exists(pdf_name_src):
+            click.secho(f'No output procuded', fg='red')
+        else:
+            pdf_name_dest = input.replace(".tex", f"_{dt}.pdf")
+            click.secho(f'Added timestamp to output:\n\t{pdf_name_src} -> {pdf_name_dest}', fg='blue')
+            shutil.move(pdf_name_src, pdf_name_dest)
+
+    if proc.returncode == 0:
+        click.secho(f'Successfully compiled in {format_timespan(end-start)}', fg='green', bold=True)
+    else:
+        click.secho(f'Compilation failed in {format_timespan(end-start)}', fg='red', bold=True)
+        click.secho(f'\tCheck {input.replace("tex", "log")} for detailed information', fg='red', bold=False)
+
+cli.add_command(compile)
 cli.add_command(clean)
 if __name__ == '__main__':
     cli()
